@@ -1,9 +1,10 @@
 ---
 dependencies:
-  - geerlingguy.java
+  - folders
+  - java
 
 galaxy_info:
-  author: geerlingguy
+  author: Guido Navalesi
   description: Elasticsearch for Linux.
   company: "Midwestern Mac, LLC"
   license: "license (BSD, MIT)"

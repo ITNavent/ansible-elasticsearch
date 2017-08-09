@@ -1,0 +1,33 @@
+---
+
+- name: Create elasticsearch group
+  group:
+    name: elasticsearch
+    state: present
+
+- name: Create elasticsearch user
+  user:
+    name: elasticsearch
+    group: elasticsearch
+    createhome: yes
+    state: present
+
+- name: Download Elasticsearch archive
+  unarchive:
+    src: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}.zip"
+    remote_src: yes
+    dest: "/opt/elasticsearch/"
+
+#- name: Add Elasticsearch apt key.
+#  apt_key:
+#    url: https://packages.elastic.co/GPG-KEY-elasticsearch
+#    state: present
+#
+#- name: Add Elasticsearch repository.
+#  apt_repository:
+#    repo: 'deb http://packages.elastic.co/elasticsearch/2.x/debian stable main'
+#    state: present
+#    update_cache: yes
+#
+#- name: Install Elasticsearch.
+#  apt: pkg=elasticsearch state=present
