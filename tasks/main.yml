@@ -2,6 +2,25 @@
 
 - include: setup.yml
 
+- name: Configure Elasticsearch
+  template:
+    src: elasticsearch.yml.j2
+    dest: "{{ elasticsearch.install_dir }}/elasticsearch/config/elasticsearch.yml"
+    owner: "{{ elasticsearch.user }}"
+    group: "{{ elasticsearch.group }}"
+    mode: 0750
+
+- name: Start Elasticsearch
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes
+
+- name: Wait for Elasticsearch
+  wait_for:
+    host: "{{  }}"
+    port:
+
 #- name: Configure Elasticsearch.
 #  template:
 #    src: elasticsearch.yml.j2
@@ -15,4 +34,4 @@
 #  service: name=elasticsearch state=started enabled=yes
 #
 #- name: Make sure Elasticsearch is running before proceeding.
-#  wait_for: host={{ elasticsearch_network_host }} port={{ elasticsearch_http_port }} delay=3 timeout=300
+#  wait_for: host={{ elasticsearch.network_host }} port={{ elasticsearch.http_port }} delay=3 timeout=300

@@ -2,21 +2,66 @@
 
 - name: Create elasticsearch group
   group:
-    name: elasticsearch
+    name: "{{ elasticsearch.group }}"
     state: present
 
 - name: Create elasticsearch user
   user:
-    name: elasticsearch
-    group: elasticsearch
+    name: "{{ elasticsearch.user }}"
+    group: "{{ elasticsearch.group }}"
     createhome: yes
     state: present
 
 - name: Download Elasticsearch archive
   unarchive:
-    src: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}.zip"
+    src: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch.version }}.tar.gz"
     remote_src: yes
-    dest: "/opt/elasticsearch/"
+    dest: "{{ elasticsearch.install_dir }}"
+    group: "{{ elasticsearch.group }}"
+    owner: "{{ elasticsearch.user }}"
+
+- name: Create symbolic link
+  file:
+    src: "{{ elasticsearch.install_dir }}/elasticsearch-{{ elasticsearch.version }}"
+    dest: "{{ elasticsearch.install_dir }}/elasticsearch"
+    state: link
+
+- name: Create default file
+  template:
+    src: ../templates/elasticsearch.environment
+    dest: /etc/default/elasticsearch
+
+- name: Create init script
+  become: yes
+  template:
+    src: ../templates/init.Debian
+    dest: /etc/init.d/elasticsearch
+    mode: 0755
+
+- name: Create service file
+  become: yes
+  template:
+    src: ../templates/elasticsearch.service
+    dest: /lib/systemd/system/elasticsearch.service
+    mode: 0750
+
+- name: Create log directory
+  become: yes
+  file:
+    path: "{{ elasticsearch.log_dir }}"
+    state: directory
+
+- name: Create run directory
+  become: yes
+  file:
+    path: /var/run/elasticsearch
+    state: directory
+
+- name: Update systemd
+  become: yes
+  systemd:
+    name: elasticsearch
+    daemon_reload: yes
 
 #- name: Add Elasticsearch apt key.
 #  apt_key:

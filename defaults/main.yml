@@ -1,7 +1,27 @@
 ---
-elasticsearch_version: 5.2.2
+elasticsearch:
+  version: 5.2.2
+  install_dir: /opt/
 
-elasticsearch_network_host: localhost
-elasticsearch_http_port: 9200
-elasticsearch_script_inline: true
-elasticsearch_script_indexed: true
+  log_dir: /var/log/elasticsearch
+  data_dir: /var/lib/elasticsearch
+
+  user: elasticsearch
+  group: elasticsearch
+
+  network_host: localhost
+  http_port: 9200
+  script_inline: true
+  script_indexed: true
+
+
+
+# Java
+home: /home/ubuntu
+navent_home: "{{home}}/navent"
+download_folder: "{{home}}"
+java_name: jdk1.8.b132
+java_archive: "{{download_folder}}/{{java_name}}.tar.gz"
+java_folder: "{{navent_home}}/jvm"
+java_alias: java-8-oracle
+java_version: 8u131
