@@ -11,10 +11,20 @@ elasticsearch:
 
   network_host: localhost
   http_port: 9200
-  script_inline: true
-  script_indexed: true
 
-
+  cluster_name: ""
+  node_name: ""
+  node_master: "true"
+  node_data: "true"
+  node_ingest: "true"
+  attrs: {}
+  bootstrap_memory_lock: "false"
+  discovery_zen_ping_unicast_hosts:
+    - "127.0.0.1"
+    - "[::1]"
+  discovery_zen_minimum_master_nodes: 0
+  gateway_recover_after_nodes: 0
+  action_destructive_requires_name: "false"
 
 # Java
 home: /home/ubuntu

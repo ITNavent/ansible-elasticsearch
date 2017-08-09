@@ -3,13 +3,13 @@
 ################################
 
 # Elasticsearch home directory
-#ES_HOME={{ elasticsearch.install_dir }}/elasticsearch
+#ES_HOME={{ elasticsearch.install_dir }}elasticsearch
 
 # Elasticsearch Java path
 #JAVA_HOME=
 
 # Elasticsearch configuration directory
-#CONF_DIR={{ elasticsearch.install_dir }}/elasticsearch/config
+#CONF_DIR={{ elasticsearch.install_dir }}elasticsearch/config
 
 # Elasticsearch data directory
 #DATA_DIR={{ elasticsearch.data_dir }}

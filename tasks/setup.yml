@@ -22,8 +22,8 @@
 
 - name: Create symbolic link
   file:
-    src: "{{ elasticsearch.install_dir }}/elasticsearch-{{ elasticsearch.version }}"
-    dest: "{{ elasticsearch.install_dir }}/elasticsearch"
+    src: "{{ elasticsearch.install_dir }}elasticsearch-{{ elasticsearch.version }}"
+    dest: "{{ elasticsearch.install_dir }}elasticsearch"
     state: link
 
 - name: Create default file

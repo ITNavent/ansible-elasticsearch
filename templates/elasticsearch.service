@@ -5,21 +5,21 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-Environment=ES_HOME={{ elasticsearch.install_dir }}/elasticsearch
-Environment=CONF_DIR={{ elasticsearch.install_dir }}/elasticsearch/config
+Environment=ES_HOME={{ elasticsearch.install_dir }}elasticsearch
+Environment=CONF_DIR={{ elasticsearch.install_dir }}elasticsearch/config
 Environment=DATA_DIR={{ elasticsearch.data_dir }}
 Environment=LOG_DIR={{ elasticsearch.log_dir }}
 Environment=PID_DIR=/var/run/elasticsearch
 EnvironmentFile=-/etc/default/elasticsearch
 
-WorkingDirectory={{ elasticsearch.install_dir }}/elasticsearch
+WorkingDirectory={{ elasticsearch.install_dir }}elasticsearch
 
 User={{ elasticsearch.user }}
 Group={{ elasticsearch.group }}
 
-ExecStartPre={{ elasticsearch.install_dir }}/elasticsearch/bin/elasticsearch-systemd-pre-exec
+ExecStartPre={{ elasticsearch.install_dir }}elasticsearch/bin/elasticsearch-systemd-pre-exec
 
-ExecStart={{ elasticsearch.install_dir }}/elasticsearch/bin/elasticsearch \
+ExecStart={{ elasticsearch.install_dir }}elasticsearch/bin/elasticsearch \
                                                 -p ${PID_DIR}/elasticsearch.pid \
                                                 --quiet \
                                                 -Edefault.path.logs=${LOG_DIR} \

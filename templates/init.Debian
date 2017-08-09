@@ -37,7 +37,7 @@ ES_USER={{ elasticsearch.user }}
 ES_GROUP={{ elasticsearch.group }}
 
 # Directory where the Elasticsearch binary distribution resides
-ES_HOME={{ elasticsearch.install_dir }}/$NAME
+ES_HOME={{ elasticsearch.install_dir }}$NAME
 
 # Additional Java OPTS
 #ES_JAVA_OPTS=
@@ -55,7 +55,7 @@ LOG_DIR=/var/log/$NAME
 DATA_DIR=/var/lib/$NAME
 
 # Elasticsearch configuration directory
-CONF_DIR={{ elasticsearch.install_dir }}/$NAME/config
+CONF_DIR=$ES_HOME/config
 
 # Maximum number of VMA (Virtual Memory Areas) a process can own
 MAX_MAP_COUNT=262144
