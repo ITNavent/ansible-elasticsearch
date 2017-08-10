@@ -46,7 +46,7 @@ ES_HOME={{ elasticsearch_install_dir }}$NAME
 MAX_OPEN_FILES=65536
 
 # Maximum amount of locked memory
-#MAX_LOCKED_MEMORY=
+MAX_LOCKED_MEMORY=unlimited
 
 # Elasticsearch log directory
 LOG_DIR=/var/log/$NAME

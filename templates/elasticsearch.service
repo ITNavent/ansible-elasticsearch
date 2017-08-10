@@ -36,12 +36,12 @@ StandardOutput=journal
 StandardError=inherit
 
 # Specifies the maximum file descriptor number that can be opened by this process
-LimitNOFILE=65536
+LimitNOFILE=100000
 
 # Specifies the maximum number of bytes of memory that may be locked into RAM
 # Set to "infinity" if you use the 'bootstrap.memory_lock: true' option
 # in elasticsearch.yml and 'MAX_LOCKED_MEMORY=unlimited' in /etc/default/elasticsearch
-#LimitMEMLOCK=infinity
+LimitMEMLOCK=infinity
 
 # Disable timeout logic and wait until process is stopped
 TimeoutStopSec=0

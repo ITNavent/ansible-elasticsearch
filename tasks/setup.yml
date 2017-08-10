@@ -12,19 +12,32 @@
     createhome: yes
     state: present
 
+- name: Check if Elasticsearch is installed
+  stat:
+    path: "{{ elasticsearch_install_dir }}/elasticsearch"
+    follow: yes
+  register: elasticsearch_is_installed
+
 - name: Download Elasticsearch archive
+  get_url:
+    url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    dest: "/tmp/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+  when: elasticsearch_is_installed.stat.exists == False
+
+- name: Unarchive Elasticsearch
   unarchive:
-    src: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-    remote_src: yes
+    src: "/tmp/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: "{{ elasticsearch_install_dir }}"
     group: "{{ elasticsearch_group }}"
     owner: "{{ elasticsearch_user }}"
+  when: elasticsearch_is_installed.stat.exists == False
 
 - name: Create symbolic link
   file:
     src: "{{ elasticsearch_install_dir }}elasticsearch-{{ elasticsearch_version }}"
     dest: "{{ elasticsearch_install_dir }}elasticsearch"
     state: link
+  when: elasticsearch_is_installed.stat.exists == False
 
 - name: Create default file
   template:
@@ -50,18 +63,24 @@
   file:
     path: "{{ elasticsearch_log_dir }}"
     state: directory
+    group: "{{ elasticsearch_group }}"
+    owner: "{{ elasticsearch_user }}"
 
 - name: Create data directory
   become: yes
   file:
     path: "{{ elasticsearch_data_dir }}"
     state: directory
+    group: "{{ elasticsearch_group }}"
+    owner: "{{ elasticsearch_user }}"
 
 - name: Create run directory
   become: yes
   file:
     path: /var/run/elasticsearch
     state: directory
+    group: "{{ elasticsearch_group }}"
+    owner: "{{ elasticsearch_user }}"
 
 - name: Update systemd
   become: yes

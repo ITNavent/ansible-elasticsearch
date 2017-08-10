@@ -9,17 +9,17 @@
     group: "{{ elasticsearch_group }}"
     mode: 0750
     backup: yes
-#  notify: restart elasticsearch
+  notify: restart elasticsearch
 
-#- name: Start Elasticsearch
-#  service:
-#    name: elasticsearch
-#    state: started
-#    enabled: yes
-#
-#- name: Wait for Elasticsearch
-#  wait_for:
-#    host: "{{ elasticsearch_network_host }}"
-#    port: "{{ elasticsearch_http_port }}"
-#    delay: 3
-#    timeout: 300
+- name: Start Elasticsearch
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes
+
+- name: Wait for Elasticsearch
+  wait_for:
+    host: "{{ elasticsearch_network_host }}"
+    port: "{{ elasticsearch_http_port }}"
+    delay: 3
+    timeout: 300
