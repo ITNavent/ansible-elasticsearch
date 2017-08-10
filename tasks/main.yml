@@ -1,9 +1,5 @@
 ---
-#- include: setup.yml
-
-- name: Debug
-  debug:
-    msg: "{{ elasticsearch_discovery_zen_ping_unicast_hosts }}"
+- include: setup.yml
 
 - name: Configure Elasticsearch
   template:

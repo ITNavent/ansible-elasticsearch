@@ -51,6 +51,12 @@
     path: "{{ elasticsearch_log_dir }}"
     state: directory
 
+- name: Create data directory
+  become: yes
+  file:
+    path: "{{ elasticsearch_data_dir }}"
+    state: directory
+
 - name: Create run directory
   become: yes
   file:
@@ -63,16 +69,58 @@
     name: elasticsearch
     daemon_reload: yes
 
-#- name: Add Elasticsearch apt key.
-#  apt_key:
-#    url: https://packages.elastic.co/GPG-KEY-elasticsearch
-#    state: present
-#
-#- name: Add Elasticsearch repository.
-#  apt_repository:
-#    repo: 'deb http://packages.elastic.co/elasticsearch/2.x/debian stable main'
-#    state: present
-#    update_cache: yes
-#
-#- name: Install Elasticsearch.
-#  apt: pkg=elasticsearch state=present
+- name: swap - disable swap
+  command: swapoff --all
+  ignore_errors: yes
+  become: yes
+
+- name: swap - remove current swaps from fstab
+  lineinfile:
+    dest: /etc/fstab
+    regexp: '^/[\S]+\s+none\s+swap '
+    state: absent
+  become: yes
+
+- name: Configure Xms JVM parameter
+  lineinfile:
+    dest: "{{ elasticsearch_install_dir }}elasticsearch/config/jvm.options"
+    regexp: '^-Xms\d+g'
+    line: "-Xms{{ elasticsearch_jvm_xms }}g"
+    state: present
+
+- name: Configure Xmx JVM parameter
+  lineinfile:
+    dest: "{{ elasticsearch_install_dir }}elasticsearch/config/jvm.options"
+    regexp: '^-Xmx\d+g'
+    line: "-Xms{{ elasticsearch_jvm_xmx }}g"
+    state: present
+
+- name: modify nofile parameter
+  pam_limits:
+    domain: "{{ elasticsearch_user }}"
+    limit_type: "-"
+    limit_item: nofile
+    value: 100000
+    use_max: yes
+
+- name: modify nproc parameter
+  pam_limits:
+    domain: "{{ elasticsearch_user }}"
+    limit_type: "-"
+    limit_item: nproc
+    value: 100000
+    use_max: yes
+
+- name: modify memlock parameter
+  pam_limits:
+    domain: "{{ elasticsearch_user }}"
+    limit_type: hard
+    limit_item: memlock
+    value: unlimited
+
+- name: modify vm.max_map_count
+  sysctl:
+    name: vm.max_map_count
+    state: present
+    value: 262144
+

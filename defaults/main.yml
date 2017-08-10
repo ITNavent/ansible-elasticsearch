@@ -21,6 +21,9 @@ elasticsearch_discovery_zen_minimum_master_nodes: 0
 elasticsearch_gateway_recover_after_nodes: 0
 elasticsearch_action_destructive_requires_name: "false"
 
+elasticsearch_jvm_xms: 2
+elasticsearch_jvm_xmx: 2
+
 # Java
 home: /home/ubuntu
 navent_home: "{{home}}/navent"
