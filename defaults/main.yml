@@ -1,21 +1,4 @@
-# Ansible Role: Elasticsearch
-
-El rol permite instalar Elasticsearch en N nodos y crear un cluster con nodos de distinto tipo (master, data, etc...)
-
-## Requerimientos
-
-```yaml
-- src: https://***:***@github.com/ITNavent/ansible-java.git
-  version: check-java
-  name: java
-
-- src: https://***:***@github.com/ITNavent/ansible-navent-folders.git
-  version: v1.0.0
-  name: folders
-```
-
-## Configuración
-```yaml
+---
 elasticsearch_version: 5.2.2
 elasticsearch_install_dir: /opt/
 elasticsearch_log_dir: /var/log/elasticsearch
@@ -41,4 +24,13 @@ elasticsearch_action_destructive_requires_name: "false"
 
 elasticsearch_jvm_xms: 2
 elasticsearch_jvm_xmx: 2
-```
+
+# Java
+home: /home/ubuntu
+navent_home: "{{home}}/navent"
+download_folder: "{{home}}"
+java_name: jdk1.8.b132
+java_archive: "{{download_folder}}/{{java_name}}.tar.gz"
+java_folder: "{{navent_home}}/jvm"
+java_alias: java-8-oracle
+java_version: 8u131
