@@ -111,7 +111,7 @@
   lineinfile:
     dest: "{{ elasticsearch_install_dir }}elasticsearch/config/jvm.options"
     regexp: '^-Xmx\d+g'
-    line: "-Xms{{ elasticsearch_jvm_xmx }}g"
+    line: "-Xmx{{ elasticsearch_jvm_xmx }}g"
     state: present
 
 - name: modify nofile parameter

@@ -6,6 +6,7 @@ elasticsearch_data_dir: /var/lib/elasticsearch
 elasticsearch_user: elasticsearch
 elasticsearch_group: elasticsearch
 elasticsearch_network_host: localhost
+elasticsearch_network_publish_host: localhost
 elasticsearch_http_port: 9200
 elasticsearch_cluster_name: ""
 elasticsearch_node_name: ""
