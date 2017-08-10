@@ -15,8 +15,8 @@
 #
 # Use a descriptive name for your cluster:
 #
-{% if elasticsearch.cluster_name != "" %}
-cluster.name: {{ elasticsearch.cluster_name }}
+{% if elasticsearch_cluster_name != "" %}
+cluster.name: {{ elasticsearch_cluster_name }}
 {% else %}
 # cluster.name: my-application
 {% endif %}
@@ -25,22 +25,22 @@ cluster.name: {{ elasticsearch.cluster_name }}
 #
 # Use a descriptive name for the node:
 #
-{% if elasticsearch.node_name != "" %}
-node.name: {{ elasticsearch.node_name }}
+{% if elasticsearch_node_name != "" %}
+node.name: {{ elasticsearch_node_name }}
 {% else %}
 #node.name: node-1
 {% endif %}
 #
-node.master: {{ elasticsearch.node_master }}
+node.master: {{ elasticsearch_node_master }}
 #
-node.data: {{ elasticsearch.node_data }}
+node.data: {{ elasticsearch_node_data }}
 #
-node.ingest: {{ elasticsearch.node_ingest }}
+node.ingest: {{ elasticsearch_node_ingest }}
 #
 # Add custom attributes to the node:
 #
 #node.attr.rack: r1
-{% for attr_name, attr_value in elasticsearch.attrs.iteritems() %}
+{% for attr_name, attr_value in elasticsearch_attrs.iteritems() %}
 node.attr.{{ attr_name }}: {{ attr_value }}
 {% endfor %}
 #
@@ -48,17 +48,17 @@ node.attr.{{ attr_name }}: {{ attr_value }}
 #
 # Path to directory where to store the data (separate multiple locations by comma):
 #
-path.data: {{ elasticsearch.data_dir }}
+path.data: {{ elasticsearch_data_dir }}
 #
 # Path to log files:
 #
-path.logs: {{ elasticsearch.log_dir }}
+path.logs: {{ elasticsearch_log_dir }}
 #
 # ----------------------------------- Memory -----------------------------------
 #
 # Lock the memory on startup:
 #
-bootstrap.memory_lock: {{ elasticsearch.bootstrap_memory_lock }}
+bootstrap.memory_lock: {{ elasticsearch_bootstrap_memory_lock }}
 #
 # Make sure that the heap size is set to about half the memory available
 # on the system and that the owner of the process is allowed to use this
@@ -70,11 +70,11 @@ bootstrap.memory_lock: {{ elasticsearch.bootstrap_memory_lock }}
 #
 # Set the bind address to a specific IP (IPv4 or IPv6):
 #
-network.host: {{ elasticsearch.network_host }}
+network.host: {{ elasticsearch_network_host }}
 #
 # Set a custom port for HTTP:
 #
-http.port: {{ elasticsearch.http_port }}
+http.port: {{ elasticsearch_http_port }}
 #
 # For more information, consult the network module documentation.
 #
@@ -83,14 +83,19 @@ http.port: {{ elasticsearch.http_port }}
 # Pass an initial list of hosts to perform discovery when new node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-{% if elasticsearch.discovery_zen_ping_unicast_hosts | length > 0 %}
-discovery.zen.ping.unicast.hosts: ["{{ elasticsearch.discovery_zen_ping_unicast_hosts | join('","') }}"]
+{% if elasticsearch_discovery_zen_ping_unicast_hosts | length > 0 %}
+discovery.zen.ping.unicast.hosts: ["{{ elasticsearch_discovery_zen_ping_unicast_hosts | join('","') }}"]
+{% else %}
+discovery.zen.ping.unicast.hosts:
+{% for ip in ansible_play_hosts | reject('equalto', inventory_hostname) | map('extract', hostvars, ['ansible_all_ipv4_addresses']) | map('first') %}
+  - {{ ip }}
+{% endfor %}
 {% endif %}
 #
 # Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
 #
-{% if elasticsearch.discovery_zen_minimum_master_nodes > 0 %}
-discovery.zen.minimum_master_nodes: {{ elasticsearch.discovery_zen_minimum_master_nodes }}
+{% if elasticsearch_discovery_zen_minimum_master_nodes > 0 %}
+discovery.zen.minimum_master_nodes: {{ elasticsearch_discovery_zen_minimum_master_nodes }}
 {% else %}
 #discovery.zen.minimum_master_nodes: 3
 {% endif %}
@@ -101,8 +106,8 @@ discovery.zen.minimum_master_nodes: {{ elasticsearch.discovery_zen_minimum_maste
 #
 # Block initial recovery after a full cluster restart until N nodes are started:
 #
-{% if elasticsearch.gateway_recover_after_nodes > 0 %}
-gateway.recover_after_nodes: {{ elasticsearch.gateway_recover_after_nodes }}
+{% if elasticsearch_gateway_recover_after_nodes > 0 %}
+gateway.recover_after_nodes: {{ elasticsearch_gateway_recover_after_nodes }}
 {% else %}
 #gateway.recover_after_nodes: 3
 {% endif %}
@@ -113,4 +118,4 @@ gateway.recover_after_nodes: {{ elasticsearch.gateway_recover_after_nodes }}
 #
 # Require explicit names when deleting indices:
 #
-action.destructive_requires_name: {{ elasticsearch.action_destructive_requires_name }}
+action.destructive_requires_name: {{ elasticsearch_action_destructive_requires_name }}

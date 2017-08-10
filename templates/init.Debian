@@ -33,11 +33,11 @@ fi
 # The following variables can be overwritten in $DEFAULT
 
 # Run Elasticsearch as this user ID and group ID
-ES_USER={{ elasticsearch.user }}
-ES_GROUP={{ elasticsearch.group }}
+ES_USER={{ elasticsearch_user }}
+ES_GROUP={{ elasticsearch_group }}
 
 # Directory where the Elasticsearch binary distribution resides
-ES_HOME={{ elasticsearch.install_dir }}$NAME
+ES_HOME={{ elasticsearch_install_dir }}$NAME
 
 # Additional Java OPTS
 #ES_JAVA_OPTS=

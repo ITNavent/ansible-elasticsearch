@@ -2,28 +2,28 @@
 
 - name: Create elasticsearch group
   group:
-    name: "{{ elasticsearch.group }}"
+    name: "{{ elasticsearch_group }}"
     state: present
 
 - name: Create elasticsearch user
   user:
-    name: "{{ elasticsearch.user }}"
-    group: "{{ elasticsearch.group }}"
+    name: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
     createhome: yes
     state: present
 
 - name: Download Elasticsearch archive
   unarchive:
-    src: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch.version }}.tar.gz"
+    src: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     remote_src: yes
-    dest: "{{ elasticsearch.install_dir }}"
-    group: "{{ elasticsearch.group }}"
-    owner: "{{ elasticsearch.user }}"
+    dest: "{{ elasticsearch_install_dir }}"
+    group: "{{ elasticsearch_group }}"
+    owner: "{{ elasticsearch_user }}"
 
 - name: Create symbolic link
   file:
-    src: "{{ elasticsearch.install_dir }}elasticsearch-{{ elasticsearch.version }}"
-    dest: "{{ elasticsearch.install_dir }}elasticsearch"
+    src: "{{ elasticsearch_install_dir }}elasticsearch-{{ elasticsearch_version }}"
+    dest: "{{ elasticsearch_install_dir }}elasticsearch"
     state: link
 
 - name: Create default file
@@ -48,7 +48,7 @@
 - name: Create log directory
   become: yes
   file:
-    path: "{{ elasticsearch.log_dir }}"
+    path: "{{ elasticsearch_log_dir }}"
     state: directory
 
 - name: Create run directory

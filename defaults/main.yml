@@ -1,30 +1,25 @@
 ---
-elasticsearch:
-  version: 5.2.2
-  install_dir: /opt/
-
-  log_dir: /var/log/elasticsearch
-  data_dir: /var/lib/elasticsearch
-
-  user: elasticsearch
-  group: elasticsearch
-
-  network_host: localhost
-  http_port: 9200
-
-  cluster_name: ""
-  node_name: ""
-  node_master: "true"
-  node_data: "true"
-  node_ingest: "true"
-  attrs: {}
-  bootstrap_memory_lock: "false"
-  discovery_zen_ping_unicast_hosts:
-    - "127.0.0.1"
-    - "[::1]"
-  discovery_zen_minimum_master_nodes: 0
-  gateway_recover_after_nodes: 0
-  action_destructive_requires_name: "false"
+elasticsearch_version: 5.2.2
+elasticsearch_install_dir: /opt/
+elasticsearch_log_dir: /var/log/elasticsearch
+elasticsearch_data_dir: /var/lib/elasticsearch
+elasticsearch_user: elasticsearch
+elasticsearch_group: elasticsearch
+elasticsearch_network_host: localhost
+elasticsearch_http_port: 9200
+elasticsearch_cluster_name: ""
+elasticsearch_node_name: ""
+elasticsearch_node_master: "true"
+elasticsearch_node_data: "true"
+elasticsearch_node_ingest: "true"
+elasticsearch_attrs: {}
+elasticsearch_bootstrap_memory_lock: "false"
+elasticsearch_discovery_zen_ping_unicast_hosts:
+  - "127.0.0.1"
+  - "[::1]"
+elasticsearch_discovery_zen_minimum_master_nodes: 0
+elasticsearch_gateway_recover_after_nodes: 0
+elasticsearch_action_destructive_requires_name: "false"
 
 # Java
 home: /home/ubuntu
