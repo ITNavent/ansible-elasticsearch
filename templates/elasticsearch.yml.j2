@@ -88,7 +88,7 @@ http.port: {{ elasticsearch_http_port }}
 discovery.zen.ping.unicast.hosts: ["{{ elasticsearch_discovery_zen_ping_unicast_hosts | join('","') }}"]
 {% else %}
 discovery.zen.ping.unicast.hosts:
-{% for ip in ansible_play_hosts | reject('equalto', inventory_hostname) | map('extract', hostvars, ['ansible_all_ipv4_addresses']) | map('first') %}
+{% for ip in ansible_play_hosts | reject('equalto', inventory_hostname) | map('extract', hostvars, ['ansible_ssh_host']) | map('first') %}
   - {{ ip }}
 {% endfor %}
 {% endif %}
