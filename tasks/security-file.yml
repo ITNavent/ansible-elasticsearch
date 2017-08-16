@@ -1,0 +1,67 @@
+---
+- set_fact: manage_file_users=elasticsearch_users_file is defined
+
+#List current users
+- name: List Users
+  shell: cat {{ elasticsearch_install_dir }}elasticsearch/config/x-pack/users | awk -F':' '{print $1}'
+  register: current_file_users
+  when: manage_file_users
+  changed_when: False
+
+- set_fact: users_to_remove={{ current_file_users.stdout_lines | difference (elasticsearch_users_file.keys()) }}
+  when: manage_file_users
+
+#Remove users
+- name: Remove Users
+  command: >
+    {{ elasticsearch_install_dir }}elasticsearch/bin/x-pack/users userdel {{item}}
+  with_items: "{{users_to_remove | default([])}}"
+  when: manage_file_users and (users_to_remove | length > 0)
+  environment:
+    CONF_DIR: "{{ elasticsearch_install_dir }}elasticsearch/config"
+    ES_HOME: "{{ elasticsearch_install_dir }}elasticsearch"
+
+
+- set_fact: users_to_add={{ elasticsearch_users_file.keys() | difference (current_file_users.stdout_lines) }}
+  when: manage_file_users
+
+#Add users
+- name: Add Users
+  command: >
+    {{ elasticsearch_install_dir }}elasticsearch/bin/x-pack/users useradd {{item}} -p {{elasticsearch_users_file[item].password}}
+  with_items: "{{users_to_add | default([])}}"
+  when: manage_file_users and users_to_add | length > 0
+#  no_log: True
+  environment:
+    CONF_DIR: "{{ elasticsearch_install_dir }}elasticsearch/config"
+    ES_HOME: "{{ elasticsearch_install_dir }}elasticsearch"
+
+#Set passwords for all users declared - Required as the useradd will not change existing user passwords
+- name: Set User Passwords
+  command: >
+    {{ elasticsearch_install_dir }}elasticsearch/bin/x-pack/users passwd {{item.key}} -p {{item.value.password}}
+  with_dict: "{{(elasticsearch_users_file | default({})) }}"
+  when: manage_file_users and elasticsearch_users_file.keys() | length > 0
+  #Currently no easy way to figure out if the password has changed or to know what it currently is so we can skip.
+  changed_when: False
+#  no_log: True
+  environment:
+    CONF_DIR: "{{ elasticsearch_install_dir }}elasticsearch/config"
+    ES_HOME: "{{ elasticsearch_install_dir }}elasticsearch"
+
+- set_fact: users_roles={{elasticsearch_users_file | extract_role_users}}
+  when: manage_file_users
+
+#Copy Roles files
+- name: Copy roles.yml File for Instance
+  template: src=security/roles.yml.j2 dest={{ elasticsearch_install_dir }}elasticsearch/config/x-pack/roles.yml owner={{ elasticsearch_user }} group={{ elasticsearch_group }} mode=0644 force=yes
+  when: elasticsearch_roles_file is defined
+
+#Overwrite users_roles file
+- name: Copy User Roles
+  template: src=security/users_roles.j2 dest={{ elasticsearch_install_dir }}elasticsearch/config/x-pack/users_roles mode=0644 force=yes
+  when: manage_file_users and users_roles | length > 0
+
+#Set permission on security directory. E.g. if 2 nodes are installed on the same machine, the second node will not get the users file created at install, causing the files being created at elasticsearch_users call and then having the wrong Permissions.
+- name: Set Security Directory Permissions Recursive
+  file: state=directory path={{ elasticsearch_install_dir }}elasticsearch/config/x-pack/ owner={{ elasticsearch_user }} group={{ elasticsearch_group }} recurse=yes

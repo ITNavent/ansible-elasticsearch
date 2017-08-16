@@ -1,5 +1,5 @@
 ---
-- include: setup.yml
+#- include: setup.yml
 
 - name: Configure Elasticsearch
   template:
@@ -10,6 +10,8 @@
     mode: 0750
     backup: yes
   notify: restart elasticsearch
+
+- include: xpack.yml
 
 - name: Start Elasticsearch
   service:
@@ -23,3 +25,7 @@
     port: "{{ elasticsearch_http_port }}"
     delay: 3
     timeout: 300
+
+#perform security actions here now elasticsearch is started
+- include: security-native.yml
+  when: (elasticsearch_install_xpack and '"security" in elasticsearch_xpack_features') and (elasticsearch_users_native is defined or elasticsearch_roles_native is defined)

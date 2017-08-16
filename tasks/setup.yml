@@ -19,37 +19,18 @@
   register: elasticsearch_is_installed
 
 - name: Download Elasticsearch archive
-  become: yes
   get_url:
     url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elasticsearch_version }}.tar.gz"
     dest: "/tmp/elasticsearch-{{ elasticsearch_version }}.tar.gz"
-    group: "{{ elasticsearch_group }}"
-    owner: "{{ elasticsearch_user }}"
   when: elasticsearch_is_installed.stat.exists == False
 
 - name: Unarchive Elasticsearch
-  become: yes
-  command: "tar xzvf elasticsearch-{{ elasticsearch_version }}.tar.gz"
-  args:
-    chdir: /tmp
-    creates: "/tmp/elasticsearch-{{ elasticsearch_version }}"
-  when: elasticsearch_is_installed.stat.exists == False
-
-- name: Move to install path
-  become: yes
-  command: "mv elasticsearch-{{ elasticsearch_version }} {{ elasticsearch_install_dir }}elasticsearch-{{ elasticsearch_version }}"
-  args:
-    chdir: /tmp
-    creates: "{{ elasticsearch_install_dir }}elasticsearch-{{ elasticsearch_version }}"
-  when: elasticsearch_is_installed.stat.exists == False
-
-- name: Set folder permissions
-  file:
-    path: "{{ elasticsearch_install_dir }}elasticsearch-{{ elasticsearch_version }}"
-    state: directory
+  unarchive:
+    src: "/tmp/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    dest: "{{ elasticsearch_install_dir }}"
     group: "{{ elasticsearch_group }}"
     owner: "{{ elasticsearch_user }}"
-    recurse: yes
+  when: elasticsearch_is_installed.stat.exists == False
 
 - name: Create symbolic link
   file:

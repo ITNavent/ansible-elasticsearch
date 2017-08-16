@@ -120,3 +120,20 @@ gateway.recover_after_nodes: {{ elasticsearch_gateway_recover_after_nodes }}
 # Require explicit names when deleting indices:
 #
 action.destructive_requires_name: {{ elasticsearch_action_destructive_requires_name }}
+
+{% if elasticsearch_xpack_security_authc %}
+xpack.security.authc:
+{% if elasticsearch_xpack_security_authc_anonymous %}
+  anonymous:
+    username: {{ elasticsearch_xpack_security_authc_anonymous_username }}
+    roles: {{ elasticsearch_xpack_security_authc_anonymous_roles }}
+    authz_exception: {{ elasticsearch_xpack_security_authc_anonymous_authz_exception }}
+{% endif %}
+{% endif %}
+
+{% if elasticsearch_xpack_monitoring %}
+{% if xpack_monitoring_exporters is defined %}
+xpack.monitoring.exporters:
+  {{ xpack_monitoring_exporters | to_yaml }}
+{% endif %}
+{% endif %}

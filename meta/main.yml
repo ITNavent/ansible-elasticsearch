@@ -1,7 +1,7 @@
 ---
-dependencies:
-  - folders
-  - java
+dependencies: []
+#  - folders
+#  - java
 
 galaxy_info:
   author: Guido Navalesi
