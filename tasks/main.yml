@@ -11,13 +11,13 @@
     backup: yes
   notify: restart elasticsearch
 
-- include: xpack.yml
-
 - name: Start Elasticsearch
   service:
     name: elasticsearch
     state: started
     enabled: yes
+
+- include: xpack.yml
 
 - name: Wait for Elasticsearch
   wait_for:
