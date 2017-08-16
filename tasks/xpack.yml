@@ -1,0 +1,74 @@
+---
+
+- name: Test if X-Pack is installed
+  shell: "{{ elasticsearch_install_dir }}elasticsearch/bin/elasticsearch-plugin list | grep x-pack"
+  become_user: "{{ elasticsearch_user }}"
+  register: x_pack_installed
+  changed_when: False
+  failed_when: "'ERROR' in x_pack_installed.stdout"
+  check_mode: no
+  ignore_errors: yes
+  environment:
+    CONF_DIR: "{{ elasticsearch_install_dir }}elasticsearch/config"
+    ES_INCLUDE: /etc/default/elasticsearch
+
+- name: Remove X-Pack plugin
+  command: "{{ elasticsearch_install_dir }}elasticsearch/bin/elasticsearch-plugin remove x-pack"
+  become_user: "{{ elasticsearch_user }}"
+  register: xpack_state
+  failed_when: "'ERROR' in xpack_state.stdout"
+  changed_when: xpack_state.rc == 0
+  when: x_pack_installed.rc == 0 and (not elasticsearch_install_xpack)
+  notify: restart elasticsearch
+  environment:
+      CONF_DIR: "{{ elasticsearch_install_dir }}elasticsearch/config"
+      ES_INCLUDE: /etc/default/elasticsearch
+
+- name: Install X-Pack plugin
+  command: >
+    {{ elasticsearch_install_dir }}elasticsearch/bin/elasticsearch-plugin install --silent --batch x-pack
+  become_user: "{{ elasticsearch_user }}"
+  register: xpack_state
+  failed_when: "'ERROR' in xpack_state.stdout"
+  changed_when: xpack_state.rc == 0
+  when: x_pack_installed.rc == 1 and elasticsearch_install_xpack
+  notify: restart elasticsearch
+  environment:
+    CONF_DIR: "{{ elasticsearch_install_dir }}elasticsearch/config"
+    ES_INCLUDE: /etc/default/elasticsearch
+
+- name: Ensure x-pack conf directory exists (file)
+  file: path={{ elasticsearch_install_dir }}elasticsearch/config/x-pack state=directory owner={{ elasticsearch_user }} group={{ elasticsearch_group }}
+  changed_when: False
+  when:
+    - elasticsearch_install_xpack and '"security" in elasticsearch_xpack_features'
+    - elasticsearch_users_file is defined or elasticsearch_roles_files is defined or elasticsearch_role_mapping is defined
+
+#-----------------------------FILE BASED REALM----------------------------------------
+
+- include: security-file.yml
+  when: (elasticsearch_install_xpack and '"security" in elasticsearch_xpack_features') and (elasticsearch_users_file is defined or elasticsearch_roles_file is defined)
+
+#-----------------------------ROLE MAPPING ----------------------------------------
+
+#Copy Roles files
+- name: Copy role_mapping.yml File for Instance
+  template: src=security/role_mapping.yml.j2 dest={{ elasticsearch_install_dir }}elasticsearch/config/x-pack/role_mapping.yml owner={{ elasticsearch_user }} group={{ elasticsearch_group }} mode=0644 force=yes
+  when: elasticsearch_role_mapping is defined
+  notify: restart elasticsearch
+
+#-----------------------------AUTH FILE----------------------------------------
+
+- name: Copy message auth key to elasticsearch
+  copy: src={{ elasticsearch_message_auth_file }} dest={{ elasticsearch_install_dir }}elasticsearch/config/x-pack/system_key owner={{ elasticsearch_user }} group={{ elasticsearch_group }} mode=0600 force=yes
+  when: elasticsearch_message_auth_file is defined
+  notify: restart elasticsearch
+
+#------------------------------------------------------------------------------------
+
+#Ensure security conf directory is created
+- name: Ensure security conf directory exists
+  file: path={{ elasticsearch_install_dir }}elasticsearch/config/security state=directory owner={{ elasticsearch_user }} group={{ elasticsearch_group }}
+  changed_when: False
+  when: elasticsearch_install_xpack and '"security" in elasticsearch_xpack_features'
+  notify: restart elasticsearch

@@ -25,6 +25,17 @@ elasticsearch_action_destructive_requires_name: "false"
 elasticsearch_jvm_xms: 2
 elasticsearch_jvm_xmx: 2
 
+elasticsearch_install_xpack: false
+elasticsearch_xpack_features: ["alerting","monitoring","graph","security"]
+
+elasticsearch_xpack_security_authc: false
+elasticsearch_xpack_security_authc_anonymous: false
+elasticsearch_xpack_security_authc_anonymous_username: ""
+elasticsearch_xpack_security_authc_anonymous_roles: ""
+elasticsearch_xpack_security_authc_anonymous_authz_exception: true
+
+elasticsearch_install_xpack_monitoring: false
+
 # Java
 home: /home/ubuntu
 navent_home: "{{home}}/navent"
