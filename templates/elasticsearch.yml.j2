@@ -121,6 +121,10 @@ gateway.recover_after_nodes: {{ elasticsearch_gateway_recover_after_nodes }}
 #
 action.destructive_requires_name: {{ elasticsearch_action_destructive_requires_name }}
 
+{% if elasticsearch_reindex_remote_whitelist is defined %}
+reindex.remote.whitelist: {{ elasticsearch_reindex_remote_whitelist | join(',') }}
+{% endif %}
+
 {% if elasticsearch_xpack_security_authc %}
 xpack.security.authc:
 {% if elasticsearch_xpack_security_authc_anonymous %}
