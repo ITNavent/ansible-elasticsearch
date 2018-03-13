@@ -17,14 +17,14 @@ WorkingDirectory={{ elasticsearch_install_dir }}elasticsearch
 User={{ elasticsearch_user }}
 Group={{ elasticsearch_group }}
 
-ExecStartPre={{ elasticsearch_install_dir }}elasticsearch/bin/elasticsearch-systemd-pre-exec
+#ExecStartPre={{ elasticsearch_install_dir }}elasticsearch/bin/elasticsearch-systemd-pre-exec
 
 ExecStart={{ elasticsearch_install_dir }}elasticsearch/bin/elasticsearch \
                                                 -p ${PID_DIR}/elasticsearch.pid \
                                                 --quiet \
-                                                -Edefault.path.logs=${LOG_DIR} \
-                                                -Edefault.path.data=${DATA_DIR} \
-                                                -Edefault.path.conf=${CONF_DIR}
+                                                -Epath.logs=${LOG_DIR} \
+                                                -Epath.data=${DATA_DIR}
+
 
 # StandardOutput is configured to redirect to journalctl since
 # some error messages may be logged in standard output before
