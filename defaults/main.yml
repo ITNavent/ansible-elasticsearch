@@ -38,7 +38,7 @@ elasticsearch_install_xpack_monitoring: false
 
 # Java
 home: /home/ubuntu
-navent_home: "{{home}}/nivot"
+navent_home: "{{home}}/navent"
 download_folder: "{{home}}"
 java_name: jdk1.8.b132
 java_archive: "{{download_folder}}/{{java_name}}.tar.gz"

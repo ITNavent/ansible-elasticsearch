@@ -4,7 +4,7 @@ dependencies:
   - java
 
 galaxy_info:
-  author: Nivot company
+  author: Guido Navalesi
   description: Elasticsearch for Linux.
   company: "Midwestern Mac, LLC"
   license: "license (BSD, MIT)"
